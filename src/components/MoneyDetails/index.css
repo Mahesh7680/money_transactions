@@ -1,0 +1,38 @@
+/* Write your CSS here */
+.balance-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+img {
+  height: 35px;
+}
+.money-details-container {
+  border: 1px solid green;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  font-size: 8px;
+  min-width: 150px;
+  height: 50px;
+}
+.money-details-container h1 {
+  font-size: 10px;
+}
+.box-1 {
+  border-color: #84cc16;
+  background-color: #ecfccb;
+}
+.box-2 {
+  border-color: #06b6d4;
+  background-color: #cffafe;
+}
+.box-3 {
+  border-color: #7c3aed;
+  background-color: #ede9fe;
+}
