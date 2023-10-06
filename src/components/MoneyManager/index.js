@@ -22,8 +22,9 @@ class MoneyManager extends Component {
     balance: 0,
     expenses: 0,
     titleInput: '',
-    amountInput: 0,
+    amountInput: '',
     optionId: '',
+    errorMessage: '',
   }
 
   onAddTitle = e => {
@@ -31,7 +32,7 @@ class MoneyManager extends Component {
   }
 
   onAddAmount = e => {
-    this.setState({amountInput: e.target.value})
+    this.setState({amountInput: parseInt(e.target.value)})
   }
 
   onPaymentType = e => {
@@ -40,26 +41,47 @@ class MoneyManager extends Component {
 
   onAddTransaction = e => {
     e.preventDefault()
-    const {titleInput, amountInput, optionId} = this.state
+    const {
+      titleInput,
+      amountInput,
+      optionId,
+      balance,
+      income,
+      expenses,
+    } = this.state
     const transaction = {
       id: uuidv4(),
       titleInput,
       amountInput,
       optionId,
     }
+    if (optionId === 'EXPENSES' && expenses + amountInput > income) {
+      console.log('amount greater than income')
+      this.setState({
+        errorMessage: '* amount should be less than available balance',
+      })
+    } else {
+      this.setState(prevState => ({
+        transactionHistoryList: [
+          ...prevState.transactionHistoryList,
+          transaction,
+        ],
+        income: prevState.income + (optionId === 'INCOME' ? amountInput : 0),
+        expenses:
+          prevState.expenses + (optionId === 'EXPENSES' ? amountInput : 0),
+        errorMessage: '',
+        titleInput: '',
+        amountInput: '',
+        optionId: '',
+      }))
+    }
+  }
 
+  onDelete = id => {
     this.setState(prevState => ({
-      transactionHistoryList: [
-        ...prevState.transactionHistoryList,
-        transaction,
-      ],
-      balance: prevState.income - prevState.expenses,
-      income: prevState.amountInput - amountInput,
-      expenses: prevState.expenses + amountInput,
-
-      titleInput: '',
-      amountInput: '',
-      optionId: '',
+      transactionHistoryList: prevState.transactionHistoryList.filter(
+        each => each.id !== id && each,
+      ),
     }))
   }
 
@@ -72,8 +94,8 @@ class MoneyManager extends Component {
       income,
       balance,
       expenses,
+      errorMessage,
     } = this.state
-    console.log(transactionHistoryList)
 
     return (
       <div className="main-container">
@@ -110,7 +132,8 @@ class MoneyManager extends Component {
               <br />
               <input
                 id="amountEl"
-                type="text"
+                type="number"
+                min="1"
                 placeholder="Amount"
                 onChange={this.onAddAmount}
                 value={amountInput}
@@ -119,13 +142,18 @@ class MoneyManager extends Component {
             <div>
               <label htmlFor="typeEl">Type</label>
               <br />
-              <select id="typeEl" onClick={this.onPaymentType}>
-                <option value="Income">Income</option>
-                <option value="Expenses">Expenses</option>
+              <select id="typeEl" required onClick={this.onPaymentType}>
+                <option required value="INCOME">
+                  Income
+                </option>
+                <option required value="EXPENSES">
+                  Expenses
+                </option>
               </select>
             </div>
             <br />
             <button type="submit">Add</button>
+            <span> {errorMessage}</span>
           </div>
           <div className="add-transactions-container">
             <h1>History</h1>
@@ -134,10 +162,15 @@ class MoneyManager extends Component {
               <p>Amount</p>
               <p>Type</p>
               <p>{}</p>
+              <p>{}</p>
             </div>
             <ul className="transactions-container">
               {transactionHistoryList.map(each => (
-                <TransactionItem key={each.id} each={each} />
+                <TransactionItem
+                  key={each.id}
+                  each={each}
+                  onDelete={this.onDelete}
+                />
               ))}
             </ul>
           </div>

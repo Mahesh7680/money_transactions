@@ -39,4 +39,13 @@ body {
   justify-content: end;
 }
 .transactions-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-grow: 1;
+  padding-left: 0px;
+  border: 1px solid red;
+}
+.transactions-container img {
+  height: 20px;
 }

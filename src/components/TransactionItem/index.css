@@ -1,1 +1,9 @@
 /* Write your CSS here */
+.history-container {
+  display: flex;
+  align-items: center;
+}
+.history-container button {
+  border: 0;
+  background-color: transparent;
+}
